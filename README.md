@@ -1,6 +1,6 @@
 # Axionorm
 
-**Agent policy as code**, formerly **APaC**. A YAML-first initiative for describing agent authority and governance independently of any one agent product.
+**Agent policy as code**. A YAML-first initiative for describing agent authority and governance independently of any one agent product.
 
 ## Status
 
