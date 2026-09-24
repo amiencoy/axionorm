@@ -34,3 +34,7 @@ Open issues for use cases, policy semantics, and schema proposals. Mark draft re
 ## Licensing
 
 Licensing for the specification and future implementations remains to be selected.
+
+---
+
+<p align="center"><sub>Built with code, coffee, and a healthy dislike of repetitive work.</sub></p>
