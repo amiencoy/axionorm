@@ -1,0 +1,149 @@
+{
+  "$defs": {
+    "ContextPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "topics": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 30,
+          "minItems": 1,
+          "title": "Topics",
+          "type": "array"
+        },
+        "kinds": {
+          "items": {
+            "enum": [
+              "fact",
+              "decision",
+              "task",
+              "constraint"
+            ],
+            "type": "string"
+          },
+          "title": "Kinds",
+          "type": "array"
+        },
+        "denied_labels": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Denied Labels",
+          "type": "array"
+        },
+        "max_items": {
+          "default": 100,
+          "maximum": 500,
+          "minimum": 1,
+          "title": "Max Items",
+          "type": "integer"
+        },
+        "max_item_chars": {
+          "default": 2000,
+          "maximum": 10000,
+          "minimum": 1,
+          "title": "Max Item Chars",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "topics",
+        "kinds",
+        "denied_labels"
+      ],
+      "title": "ContextPolicy",
+      "type": "object"
+    },
+    "ToolRule": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "enum": [
+            "workspace_list",
+            "workspace_read",
+            "workspace_write",
+            "context_read"
+          ],
+          "title": "Name",
+          "type": "string"
+        },
+        "allow": {
+          "default": false,
+          "title": "Allow",
+          "type": "boolean"
+        },
+        "extensions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Extensions",
+          "type": "array"
+        },
+        "max_bytes": {
+          "default": 32768,
+          "maximum": 1048576,
+          "minimum": 1,
+          "title": "Max Bytes",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "ToolRule",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "const": "axionorm/v0.1",
+      "title": "Version",
+      "type": "string"
+    },
+    "policy_id": {
+      "pattern": "^[a-z0-9-]{1,64}$",
+      "title": "Policy Id",
+      "type": "string"
+    },
+    "audience": {
+      "pattern": "^[a-z0-9-]{1,64}$",
+      "title": "Audience",
+      "type": "string"
+    },
+    "purpose": {
+      "pattern": "^[a-z0-9-]{1,64}$",
+      "title": "Purpose",
+      "type": "string"
+    },
+    "lease_seconds": {
+      "default": 600,
+      "maximum": 3600,
+      "minimum": 30,
+      "title": "Lease Seconds",
+      "type": "integer"
+    },
+    "context": {
+      "$ref": "#/$defs/ContextPolicy"
+    },
+    "tools": {
+      "items": {
+        "$ref": "#/$defs/ToolRule"
+      },
+      "title": "Tools",
+      "type": "array"
+    }
+  },
+  "required": [
+    "version",
+    "policy_id",
+    "audience",
+    "purpose",
+    "context",
+    "tools"
+  ],
+  "title": "Policy",
+  "type": "object"
+}

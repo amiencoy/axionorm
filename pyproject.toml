@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "axionorm"
+version = "0.1.0"
+description = "YAML-first agent context and capability enforcement with OPA"
+requires-python = ">=3.11"
+dependencies = ["pydantic>=2.11,<3", "PyYAML>=6,<7"]
+
+[project.scripts]
+axionorm = "axionorm.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+axionorm = ["*.rego", "*.json"]
