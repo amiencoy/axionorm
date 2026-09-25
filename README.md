@@ -1,39 +1,49 @@
 # Axionorm
 
-**Agent policy as code**. A YAML-first initiative for describing agent authority and governance independently of any one agent product.
+**Agent policy as code.** YAML-first authority and context policy with an installable Python reference implementation and OPA backend.
 
 ## Status
 
-Early-stage specification and planning. No stable schema, evaluator, or OPA/Rego integration is released yet.
+v0.1.0 is an experimental reference implementation: strict schemas, digest-bound context review, a real OPA/Rego evaluator, and enforcement integrated with Parabiont and PARALAX MCP. It is not a complete semantic DLP product or a production security certification.
 
-## Scope
+## Install
 
-- Explicit agent authority, allowed capabilities, and target scope.
-- Approval requirements and policy decision records.
-- Portable policy documents with validation and versioning.
-- A planned optional OPA/Rego evaluation backend.
+Python 3.11+ and Git are required. Use a virtual environment.
 
-## Initial roadmap
+```bash
+git clone --branch v0.1.0 https://github.com/amiencoy/axionorm.git
+cd axionorm
+python3 -m venv .venv
+. .venv/bin/activate
+python -m pip install .
+axionorm install-opa --directory .runtime/opa
+axionorm schema policy
+```
 
-1. Review the existing policy prototype in [Lophiarch](https://github.com/amiencoy/lophiarch), formerly Reconnator: `src/config/agent-policy.yaml`.
-2. Separate product-specific configuration from a reusable policy specification.
-3. Draft a schema and examples, including invalid and denied cases.
-4. Define an evaluator contract and explore an optional OPA/Rego backend.
-5. Integrate with consumers after the specification and compatibility requirements are reviewed.
+OPA installs locally with a pinned version and verified checksum. See [OPA mechanics](docs/OPA.md). YAML does not execute arbitrary installation stages.
 
-The existing Lophiarch policy has not been migrated by creating this repository.
+## Review and filter
 
-## Boundaries
+Read candidate JSON before approving selected IDs. Approval records content digests; subsequent edits invalidate approval.
 
-Axionorm defines policy. Agent runtimes enforce policy decisions. [Parabiont Protocol](https://github.com/amiencoy/parabiont-protocol) addresses governed attachment; Lophiarch remains a reconnaissance product.
+```bash
+axionorm review candidate.json --approve architecture continuity --out review.local.json
+axionorm filter candidate.json --review review.local.json --policy examples/technical-review.yaml --opa .runtime/opa/opa
+```
 
-## Contributing
+Eligible records are `fact`, `decision`, `task`, and `constraint` in approved topics. Personal labels, unreviewed items, unknown fields, suspicious text, missing OPA and invalid decisions fail closed. The sample policy disables writes; operators can enable bounded artifact creation before issuing a new capsule.
 
-Open issues for use cases, policy semantics, and schema proposals. Mark draft requirements explicitly and include expected allow/deny outcomes in examples.
+## Integration
+
+- [Parabiont Protocol](https://github.com/amiencoy/parabiont-protocol): signed, leased context carrier over A2A.
+- [PARALAX MCP](https://github.com/amiencoy/paralax-mcp): tool scope/output enforcement, combined installer and desktop setup.
+- [Lophiarch](https://github.com/amiencoy/lophiarch): separate reconnaissance product. Its existing policy has not been migrated.
+
+Install pytest, then run `python -m pytest tests -q` after installing OPA. `OPA_BINARY` overrides its location. Schemas are available in `schemas/` and through the CLI.
 
 ## Licensing
 
-Licensing for the specification and future implementations remains to be selected.
+Licensing for the specification and implementations remains to be selected. Dependencies retain their upstream licenses.
 
 ---
 
