@@ -18,7 +18,8 @@ def install(destination):
     if output.exists() and hashlib.sha256(output.read_bytes()).hexdigest() == checksum:
         return output
     url = f"https://github.com/open-policy-agent/opa/releases/download/v{lock['version']}/{asset}"
-    with urllib.request.urlopen(url, timeout=60) as response:
+    # The origin is fixed to HTTPS and the downloaded bytes must match the SHA-256 lock.
+    with urllib.request.urlopen(url, timeout=60) as response:  # nosec B310
         data = response.read(150_000_001)
     if len(data) > 150_000_000 or hashlib.sha256(data).hexdigest() != checksum:
         raise RuntimeError("OPA checksum mismatch; refusing installation")
@@ -26,7 +27,8 @@ def install(destination):
     try:
         with os.fdopen(fd, "wb") as stream:
             stream.write(data)
-        os.chmod(temporary, 0o755)
+        # The checksum-verified OPA program must be executable.
+        os.chmod(temporary, 0o755)  # nosec B103
         os.replace(temporary, output)
     finally:
         Path(temporary).unlink(missing_ok=True)

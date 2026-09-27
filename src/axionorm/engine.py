@@ -1,7 +1,8 @@
 import hashlib
 import json
 import re
-import subprocess
+# OPA is invoked as a fixed argv list without a shell.
+import subprocess  # nosec B404
 from pathlib import Path
 import yaml
 from .models import Policy, Candidate
@@ -41,7 +42,8 @@ class Engine:
     def decide(self, request):
         payload = {**request, "policy": self.policy}
         try:
-            result = subprocess.run(
+            # The operator-pinned executable receives fixed arguments without a shell.
+            result = subprocess.run(  # nosec B603
                 [self.opa, "eval", "--format=json", "--stdin-input", "--data",
                  str(Path(__file__).with_name("decision.rego")), "data.axionorm.allow"],
                 input=canonical(payload), capture_output=True, timeout=5, check=True,
