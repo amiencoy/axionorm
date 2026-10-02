@@ -9,13 +9,14 @@ class Strict(BaseModel):
 class ContextPolicy(Strict):
     topics: list[str] = Field(min_length=1, max_length=30)
     kinds: list[Literal["fact", "decision", "task", "constraint"]]
+    required_labels: list[str] = Field(default_factory=lambda: ["technical"], min_length=1, max_length=20)
     denied_labels: list[str] = Field(min_length=1)
     max_items: int = Field(default=100, ge=1, le=500)
     max_item_chars: int = Field(default=2000, ge=1, le=10000)
 
 
 class ToolRule(Strict):
-    name: Literal["workspace_list", "workspace_read", "workspace_write", "context_read"]
+    name: Literal["gateway_describe", "workspace_list", "workspace_read", "workspace_write", "context_read"]
     allow: bool = False
     extensions: list[str] = Field(default_factory=list)
     max_bytes: int = Field(default=32768, ge=1, le=1048576)

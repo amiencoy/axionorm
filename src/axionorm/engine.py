@@ -39,6 +39,19 @@ class Engine:
         self.opa = str(Path(opa_path).resolve(strict=True))
         self.policy_digest = digest(self.policy)
 
+    def effective_contract(self):
+        """Return the policy requirements a caller may safely negotiate against."""
+        return {
+            "version": "axionorm-policy-contract/v0.1",
+            "policy_id": self.policy["policy_id"],
+            "policy_digest": self.policy_digest,
+            "audience": self.policy["audience"],
+            "purpose": self.policy["purpose"],
+            "lease_seconds": self.policy["lease_seconds"],
+            "context": self.policy["context"],
+            "tools": [rule for rule in self.policy["tools"] if rule["allow"]],
+        }
+
     def decide(self, request):
         payload = {**request, "policy": self.policy}
         try:

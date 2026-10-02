@@ -25,6 +25,18 @@
           "title": "Kinds",
           "type": "array"
         },
+        "required_labels": {
+          "default": [
+            "technical"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Required Labels",
+          "type": "array"
+        },
         "denied_labels": {
           "items": {
             "type": "string"
@@ -61,6 +73,7 @@
       "properties": {
         "name": {
           "enum": [
+              "gateway_describe",
             "workspace_list",
             "workspace_read",
             "workspace_write",

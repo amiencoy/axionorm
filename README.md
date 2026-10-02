@@ -33,6 +33,8 @@ axionorm filter candidate.json --review review.local.json --policy examples/tech
 
 Eligible records are `fact`, `decision`, `task`, and `constraint` in approved topics. Personal labels, unreviewed items, unknown fields, suspicious text, missing OPA and invalid decisions fail closed. The sample policy disables writes; operators can enable bounded artifact creation before issuing a new capsule.
 
+Integrations can call `Engine.effective_contract()` to negotiate against the active audience, purpose, lease, context requirements, policy digest, and allowed tools. Required labels are policy-defined rather than hard-coded, and the contract omits denied capabilities.
+
 ## Integration
 
 - [Parabiont Protocol](https://github.com/amiencoy/parabiont-protocol): signed, leased context carrier over A2A.

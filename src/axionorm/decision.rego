@@ -9,7 +9,9 @@ allow if {
     input.sensitive == false
     input.item.topic in input.policy.context.topics
     input.item.kind in input.policy.context.kinds
-    "technical" in input.item.labels
+    every label in input.policy.context.required_labels {
+        label in input.item.labels
+    }
     count(input.item.text) <= input.policy.context.max_item_chars
     not denied_label
 }
@@ -29,5 +31,5 @@ allow if {
     extension_ok(rule)
 }
 
-extension_ok(rule) if { input.tool in {"workspace_list", "context_read"} }
+extension_ok(rule) if { input.tool in {"gateway_describe", "workspace_list", "context_read"} }
 extension_ok(rule) if { input.extension in rule.extensions }

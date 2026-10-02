@@ -6,10 +6,12 @@ lease_seconds: 600
 context:
   topics: [parabiont, axionorm, paralax, lophiarch]
   kinds: [fact, decision, task, constraint]
+  required_labels: [technical]
   denied_labels: [personal, relationship, debt, finance, health, family, contact, credential, raw-chat]
   max_items: 100
   max_item_chars: 2000
 tools:
+  - {name: gateway_describe, allow: true, max_bytes: 32768}
   - {name: context_read, allow: true, max_bytes: 65536}
   - {name: workspace_list, allow: true, max_bytes: 32768}
   - {name: workspace_read, allow: true, extensions: [.md, .txt, .json, .yaml, .py], max_bytes: 32768}

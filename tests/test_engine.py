@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import pytest
+import yaml
 from axionorm import Engine, PolicyDenied
 from axionorm.engine import digest
 
@@ -26,6 +27,30 @@ def test_approved_context(engine):
     result, audit = engine.filter_context({"version": "parabiont-candidate/v0.1", "items": [i]}, review([i]))
     assert result == [{k: i[k] for k in ("id", "kind", "topic", "text")}]
     assert "text" not in str(audit)
+
+
+def test_effective_contract_exposes_requirements_and_allowed_tools(engine):
+    contract = engine.effective_contract()
+    assert contract["version"] == "axionorm-policy-contract/v0.1"
+    assert contract["policy_digest"] == engine.policy_digest
+    assert contract["context"]["required_labels"] == ["technical"]
+    assert {rule["name"] for rule in contract["tools"]} == {
+        "gateway_describe", "context_read", "workspace_list", "workspace_read"
+    }
+
+
+def test_required_labels_are_policy_driven(tmp_path):
+    policy = yaml.safe_load((ROOT / "examples/technical-review.yaml").read_text())
+    policy["context"]["required_labels"] = ["fleet-reviewed"]
+    policy_path = tmp_path / "policy.yaml"
+    policy_path.write_text(yaml.safe_dump(policy))
+    custom = Engine(policy_path, os.environ.get("OPA_BINARY", ROOT / ".runtime/opa/opa"))
+    denied = item()
+    with pytest.raises(PolicyDenied):
+        custom.filter_context({"version": "parabiont-candidate/v0.1", "items": [denied]}, review([denied]))
+    allowed = item(labels=["fleet-reviewed"])
+    state, _ = custom.filter_context({"version": "parabiont-candidate/v0.1", "items": [allowed]}, review([allowed]))
+    assert state[0]["id"] == allowed["id"]
 
 
 @pytest.mark.parametrize("change", [{"labels": ["technical", "debt"]}, {"topic": "unrelated"},
